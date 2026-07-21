@@ -328,6 +328,7 @@
     <div class="nav-inner">
       <div class="nav-brand"><span class="nav-mark" aria-hidden="true"></span> Еда × Парки</div>
       <div class="nav-links">
+        <a href="#onboardsteps">Шаги</a>
         <a href="#tools">Инструменты</a>
         <a href="#proapp">Приложение ПРО</a>
         <a href="#courier">Курьер</a>
@@ -366,11 +367,32 @@
         <div class="role-card"><h4>Привычный работодатель</h4><p>Знакомая компания рядом, а не абстрактный сервис — понятно, к кому идти с вопросом.</p></div>
         <div class="role-card"><h4>«Человеческие» отношения</h4><p>Личный контакт вместо алгоритма: разбираются в ситуации, а не отвечают шаблонной фразой.</p></div>
         <div class="role-card"><h4>«Своя компания»</h4><p>Ощущение принадлежности и заботы, а не разовый заработок через очередное приложение.</p></div>
-        <div class="role-card"><h4>Платёжный партнёр</h4><p>Все расчёты и выплаты — через парк, курьеру не нужно разбираться в нескольких источниках дохода.</p></div>
+        <div class="role-card"><h4>Платёжный партнёр</h4><p>Все расчёты и выплаты — через парк: моментальные ежедневные выплаты, а при необходимости — вывод денег на карты третьих лиц.</p></div>
         <div class="role-card"><h4>Быстрый старт</h4><p>Оформление даже без опыта — парк помогает с самозанятостью и документами.</p></div>
         <div class="role-card"><h4>Помощь с экипировкой</h4><p>Парк помогает быстро получить бесплатную термосумку и инвентарь от Яндекс Еды — не нужно разбираться самому; на связи всегда, отвечают быстро и по существу.</p></div>
       </div>
       <p class="reveal d2" style="margin-top:20px; font-size:14px; color:var(--clay); max-width:64ch;">Именно поэтому курьер не «уходит из парка ради Еды» — он просто добавляет доход, не теряя привычную работу и человека, к которому можно обратиться.</p>
+    </div>
+  </section>
+
+  <section id="onboardsteps">
+    <div class="wrap">
+      <div class="head-block reveal">
+        <span class="tag petrol">Первые шаги</span>
+        <h2>Семь шагов — и вы на линии</h2>
+      </div>
+      <div class="route">
+        <div class="route-spine" aria-hidden="true"></div>
+        <div class="route-dot" aria-hidden="true"></div>
+        <div class="stop"><div class="stop-num">1</div><h3>Акцепт оферты</h3><p>Принимаете условия сотрудничества — базовый юридический шаг, дальше открывается доступ к инструментам.</p></div>
+        <div class="stop"><div class="stop-num">2</div><h3>Регистрация в диспетчерской</h3><p>Заводите аккаунт в Fleet — здесь регистрируете и выводите курьеров на линию.</p><span class="badge"><a href="https://fleet.yandex.ru/" target="_blank" rel="noopener" style="color:inherit; text-decoration:none;">fleet.yandex.ru</a></span></div>
+        <div class="stop"><div class="stop-num">3</div><h3>Регистрация в личном кабинете</h3><p>Получаете доступ к лидам, ставкам и управлению доступом команды.</p><span class="badge"><a href="https://partners-app.yandex.ru/" target="_blank" rel="noopener" style="color:inherit; text-decoration:none;">partners-app.yandex.ru</a></span></div>
+        <div class="stop"><div class="stop-num">4</div><h3>Ознакомление со ставками</h3><p>Смотрите актуальные ставки и в личном кабинете, и в диспетчерской — они обновляются раз в 2 недели.</p></div>
+        <div class="stop"><div class="stop-num">5</div><h3>Запуск рекламной кампании</h3><p>Начинаете привлекать курьеров — объявления, площадки, соцсети (раздел «Найм» ниже поможет).</p></div>
+        <div class="stop"><div class="stop-num">6</div><h3>Регистрация курьеров в приложении ПРО</h3><p>Каждый привлечённый курьер завершает оформление в мобильном приложении Яндекс Про.</p></div>
+        <div class="stop"><div class="stop-num">7</div><h3>Доведение курьеров до целевого действия</h3><p>Сопровождаете курьера до первых заказов — именно тогда включается бонус за привлечение.</p></div>
+      </div>
+      <p class="reveal d1" style="margin-top:18px; font-size:13.5px; color:var(--clay); max-width:66ch;">Вопросы на любом из шагов — можно задать в любой момент: диспетчерская поддержки парков работает круглосуточно.</p>
     </div>
   </section>
 
@@ -1066,26 +1088,28 @@
     navSections.forEach(function(s){ navIo.observe(s); });
   }
 
-  var track = document.getElementById('routeTrack');
-  var dot = document.getElementById('routeDot');
-  var stops = track ? track.querySelectorAll('.stop') : [];
-  function updateRoute(){
-    if(!track || !dot) return;
-    var rect = track.getBoundingClientRect();
-    var vh = window.innerHeight || document.documentElement.clientHeight;
-    var total = rect.height;
-    var progress = (vh*0.55 - rect.top) / total;
-    progress = Math.max(0, Math.min(1, progress));
-    dot.style.top = (progress * (total-18)) + 'px';
-    var idx = Math.min(stops.length-1, Math.floor(progress * stops.length));
-    stops.forEach(function(s,i){ s.classList.toggle('active', i===idx && progress>0.02); });
+  var routeTracks = Array.prototype.slice.call(document.querySelectorAll('.route'));
+  function updateRoutes(){
+    routeTracks.forEach(function(track){
+      var dot = track.querySelector('.route-dot');
+      var stops = track.querySelectorAll('.stop');
+      if(!dot) return;
+      var rect = track.getBoundingClientRect();
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+      var total = rect.height;
+      var progress = (vh*0.55 - rect.top) / total;
+      progress = Math.max(0, Math.min(1, progress));
+      dot.style.top = (progress * (total-18)) + 'px';
+      var idx = Math.min(stops.length-1, Math.floor(progress * stops.length));
+      stops.forEach(function(s,i){ s.classList.toggle('active', i===idx && progress>0.02); });
+    });
   }
   var ticking = false;
   window.addEventListener('scroll', function(){
-    if(!ticking){ requestAnimationFrame(function(){ updateRoute(); ticking=false; }); ticking = true; }
+    if(!ticking){ requestAnimationFrame(function(){ updateRoutes(); ticking=false; }); ticking = true; }
   }, { passive:true });
-  window.addEventListener('resize', updateRoute);
-  updateRoute();
+  window.addEventListener('resize', updateRoutes);
+  updateRoutes();
 })();
 </script>
 </body>
