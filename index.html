@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Кейс-проект: онбординг-гид для парков-партнёров Яндекс Еды — диспетчерская, личный кабинет, ставки. Демо-макет, не официальная страница Яндекс Еды.">
+<title>Яндекс Еда × Парки — гид для подключённых партнёров</title>
+<style>
+  :root{
+    --yolk:#FFCC00;
+    --yolk-deep:#E0AC00;
+    --yolk-pale:#FFF3C0;
+    --ink:#1C140D;
+    --paper:#FFFCF6;
+    --paper-raised:#FFFFFF;
+    --paper-tr:rgba(255,252,246,.86);
+    --clay:#7A6A57;
+    --clay-soft:#E7DDCB;
+    --petrol:#1F4B49;
+    --petrol-soft:#DCEBE9;
+    --danger:#B5432B;
+    --danger-soft:rgba(181,67,43,.09);
+    --line:rgba(28,20,13,.14);
+    --shadow:0 24px 48px -28px rgba(28,20,13,.35);
+    --shadow-soft:0 12px 28px -18px rgba(28,20,13,.28);
+    --radius-lg:32px;
+    --radius-md:20px;
+    --radius-sm:12px;
+    --maxw:1180px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ink:#F4ECDC; --paper:#15100A; --paper-raised:#1D160E; --paper-tr:rgba(21,16,10,.86);
+      --clay:#C2B39E; --clay-soft:#2A2115; --petrol-soft:#17302E; --line:rgba(244,236,220,.14);
+      --danger-soft:rgba(255,138,110,.14);
+      --shadow:0 24px 48px -28px rgba(0,0,0,.6); --shadow-soft:0 12px 28px -18px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#F4ECDC; --paper:#15100A; --paper-raised:#1D160E; --paper-tr:rgba(21,16,10,.86);
+    --clay:#C2B39E; --clay-soft:#2A2115; --petrol-soft:#17302E; --line:rgba(244,236,220,.14);
+    --danger-soft:rgba(255,138,110,.14);
+    --shadow:0 24px 48px -28px rgba(0,0,0,.6); --shadow-soft:0 12px 28px -18px rgba(0,0,0,.55);
+  }
+  :root[data-theme="light"]{
+    --ink:#1C140D; --paper:#FFFCF6; --paper-raised:#FFFFFF; --paper-tr:rgba(255,252,246,.86);
+    --clay:#7A6A57; --clay-soft:#E7DDCB; --petrol-soft:#DCEBE9; --line:rgba(28,20,13,.14);
+    --danger-soft:rgba(181,67,43,.09);
+    --shadow:0 24px 48px -28px rgba(28,20,13,.35); --shadow-soft:0 12px 28px -18px rgba(28,20,13,.28);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;}
+  .page{ background:var(--paper); color:var(--ink); font-family:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; overflow-x:hidden; }
+  h1,h2,h3{text-wrap:balance; margin:0; font-weight:800; letter-spacing:-.02em;}
+  p{margin:0; line-height:1.6;}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 clamp(20px,5vw,56px);}
+  section{padding:clamp(56px,9vw,110px) 0;}
+  section + section{ border-top:1px solid var(--line); }
+
+  .tag{
+    display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:700;
+    letter-spacing:.06em; text-transform:uppercase; padding:7px 16px 8px; border-radius:999px;
+    background:var(--yolk-pale); color:#241B0E; transform:rotate(-2deg); box-shadow:var(--shadow-soft);
+  }
+  .tag.petrol{ background:var(--petrol-soft); color:var(--petrol); }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:10px; padding:15px 26px; border-radius:999px;
+    font-weight:700; font-size:16px; border:1px solid transparent; cursor:pointer; text-decoration:none;
+    transition:transform .18s ease, box-shadow .18s ease; font-family:inherit;
+  }
+  .btn:hover{ transform:translateY(-2px); }
+  .btn:focus-visible{ outline:3px solid var(--petrol); outline-offset:3px; }
+  .btn-primary{ background:var(--ink); color:var(--yolk); box-shadow:var(--shadow-soft); }
+  .btn-primary:hover{ box-shadow:var(--shadow); }
+  .btn-ghost{ background:transparent; color:var(--ink); border-color:var(--line); }
+  .btn-ghost:hover{ border-color:var(--ink); }
+  .btn-sm{ padding:10px 18px; font-size:14px; }
+
+  .reveal{ opacity:0; transform:translateY(26px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+  .reveal.d1{ transition-delay:.08s; } .reveal.d2{ transition-delay:.16s; } .reveal.d3{ transition-delay:.24s; }
+
+  h3.sub{ font-size:18px; margin:36px 0 4px; }
+
+  /* NAV */
+  .navbar{ position:sticky; top:0; z-index:30; backdrop-filter:blur(14px); background:var(--paper-tr); border-bottom:1px solid var(--line); }
+  .nav-inner{ max-width:var(--maxw); margin:0 auto; padding:12px clamp(20px,5vw,56px); display:flex; align-items:center; justify-content:space-between; gap:20px; }
+  .nav-brand{ display:flex; align-items:center; gap:10px; font-weight:800; font-size:14.5px; white-space:nowrap; }
+  .nav-mark{ width:24px; height:24px; border-radius:50%; background:conic-gradient(from 200deg, var(--yolk), var(--yolk-deep), var(--yolk)); flex:0 0 auto; }
+  .nav-links{ display:flex; gap:2px; overflow-x:auto; scrollbar-width:none; }
+  .nav-links::-webkit-scrollbar{ display:none; }
+  .nav-links a{ white-space:nowrap; padding:8px 12px; border-radius:999px; font-size:13px; font-weight:600; color:var(--clay); text-decoration:none; transition:background .2s, color .2s; }
+  .nav-links a:hover, .nav-links a.active{ background:var(--yolk-pale); color:#241B0E; }
+  .nav-cta{ flex:0 0 auto; display:none; }
+  @media(min-width:760px){ .nav-cta{ display:inline-flex; } }
+
+  /* HERO */
+  .hero{ position:relative; padding-top:clamp(48px,8vw,88px); padding-bottom:clamp(44px,7vw,88px); }
+  .hero-blob{
+    position:absolute; top:-14%; right:-14%; width:min(60vw,700px); aspect-ratio:1/1;
+    background:radial-gradient(circle at 32% 28%, var(--yolk) 0%, var(--yolk-deep) 78%);
+    border-radius:42% 58% 55% 45% / 45% 55% 45% 55%; animation:blobmove 16s ease-in-out infinite; z-index:0;
+  }
+  @keyframes blobmove{
+    0%,100%{ border-radius:42% 58% 55% 45% / 45% 55% 45% 55%; transform:rotate(0deg) scale(1); }
+    50%{ border-radius:55% 45% 40% 60% / 55% 45% 60% 40%; transform:rotate(6deg) scale(1.03); }
+  }
+  .hero-inner{ position:relative; z-index:1; max-width:620px; }
+  .hero h1{ font-size:clamp(36px,5vw,58px); line-height:1.05; margin:16px 0 18px; }
+  .hero p.lead{ font-size:clamp(16px,1.8vw,19px); color:var(--clay); max-width:52ch; margin-bottom:28px; }
+  .hero-ctas{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:36px; }
+  .hero-start{ display:inline-flex; align-items:center; gap:10px; font-size:14px; font-weight:700; color:var(--clay); }
+  .pin-dot{ width:10px; height:10px; border-radius:50%; background:var(--petrol); box-shadow:0 0 0 5px var(--petrol-soft); animation:pulse 2.4s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{ box-shadow:0 0 0 5px var(--petrol-soft);} 50%{ box-shadow:0 0 0 9px var(--petrol-soft);} }
+
+  /* STATS */
+  .stats{ padding-top:0; border-top:none; }
+  .stats-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:var(--radius-md); overflow:hidden; }
+  @media (max-width:820px){ .stats-grid{ grid-template-columns:repeat(2,1fr); } }
+  .stat{ background:var(--paper-raised); padding:26px 20px; }
+  .stat b{ display:block; font-size:clamp(26px,3.4vw,38px); font-weight:800; letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
+  .stat span{ font-size:13.5px; color:var(--clay); }
+
+  /* generic head block */
+  .head-block{ max-width:660px; margin-bottom:36px; }
+  .head-block h2{ font-size:clamp(27px,3.4vw,38px); margin-top:14px; }
+  .head-block p.lead{ margin-top:14px; color:var(--clay); font-size:15.5px; max-width:60ch; }
+
+  /* CHIPS */
+  .chiprow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
+  .chip{ font-size:13px; font-weight:700; padding:8px 14px; border-radius:999px; background:var(--clay-soft); color:var(--ink); }
+
+  /* FORMULA CARD */
+  .formula{ margin-top:16px; background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-md); padding:22px 24px; }
+  .formula code{ display:block; font-family:inherit; font-weight:700; font-size:15px; line-height:1.9; color:var(--ink); }
+  .formula p{ margin-top:12px; font-size:13.5px; color:var(--clay); }
+
+  /* DOC GRID */
+  .doc-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:18px; }
+  @media(max-width:700px){ .doc-grid{grid-template-columns:1fr;} }
+  .doc-card{ background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-md); padding:22px; position:relative; }
+  .doc-card.primary{ border-color:var(--petrol); box-shadow:var(--shadow-soft); }
+  .doc-card.primary::before{ content:"Актуально сейчас"; position:absolute; top:-11px; left:20px; background:var(--petrol); color:#EAFBF8; font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; padding:4px 10px; border-radius:999px; }
+  .doc-card h4{ font-size:16px; margin:0 0 10px; }
+  .doc-card ul{ margin:0; padding-left:18px; color:var(--clay); font-size:13.5px; line-height:1.8; }
+  .doc-card ul li::marker{ color:var(--petrol); }
+  .doc-note{ margin-top:14px; font-size:13px; color:var(--clay); border-left:3px dashed var(--line); padding-left:12px; }
+
+  /* GEAR */
+  .gear-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:12px; }
+  @media(max-width:980px){ .gear-grid{grid-template-columns:repeat(2,1fr);} }
+  @media(max-width:560px){ .gear-grid{grid-template-columns:1fr;} }
+  .gear-card{ background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px; transition:transform .2s ease, box-shadow .2s ease; }
+  .gear-card:hover{ transform:translateY(-4px); box-shadow:var(--shadow-soft); }
+  .gear-icon{ width:38px; height:38px; border-radius:11px; background:var(--yolk-pale); display:flex; align-items:center; justify-content:center; margin-bottom:14px; font-weight:800; font-size:12px; letter-spacing:.02em; color:#241B0E; }
+  .gear-card h4{ font-size:15px; margin:0 0 8px; }
+  .gear-card p{ font-size:13.5px; color:var(--clay); }
+
+  /* PROMO */
+  .promo{ margin-top:24px; border-radius:var(--radius-md); background:repeating-linear-gradient(135deg, var(--yolk) 0 16px, var(--yolk-deep) 16px 32px); padding:3px; }
+  .promo-inner{ background:var(--paper-raised); border-radius:calc(var(--radius-md) - 3px); padding:22px 24px; display:flex; justify-content:space-between; gap:18px; flex-wrap:wrap; align-items:center; }
+  .promo-inner h4{ font-size:16px; margin:0 0 6px; }
+  .promo-inner p{ font-size:13.5px; color:var(--clay); max-width:56ch; }
+  .promo-expired{ font-size:12px; font-weight:700; color:var(--danger); background:var(--danger-soft); padding:5px 10px; border-radius:999px; white-space:nowrap; }
+
+  /* ECONOMICS TICKETS */
+  .econ-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+  @media (max-width:900px){ .econ-grid{ grid-template-columns:1fr; } }
+  .ticket{ position:relative; background:var(--paper-raised); border-radius:var(--radius-md); box-shadow:var(--shadow-soft); overflow:hidden; transition:transform .22s ease, box-shadow .22s ease; }
+  .ticket:hover{ transform:translateY(-6px); box-shadow:var(--shadow); }
+  .ticket-stub{ padding:20px 22px; border-bottom:2px dashed var(--line); position:relative; }
+  .ticket-stub::before,.ticket-stub::after{ content:""; position:absolute; bottom:-11px; width:22px; height:22px; border-radius:50%; background:var(--paper); border:1px solid var(--line); }
+  .ticket-stub::before{ left:-11px; } .ticket-stub::after{ right:-11px; }
+  .ticket-kicker{ font-size:12px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--petrol); }
+  .ticket-body{ padding:24px 22px 26px; }
+  .ticket-body h3{ font-size:19px; margin-bottom:10px; }
+  .ticket-body p{ font-size:14.5px; color:var(--clay); }
+  .ticket-figure{ font-size:13px; font-weight:700; color:var(--ink); margin-top:14px; }
+  .ticket-figure em{ font-style:normal; color:var(--clay); border-bottom:1px dashed var(--clay); font-weight:600; }
+  .ticket.dark{ background:var(--ink); }
+  .ticket.dark .ticket-stub{ border-color:rgba(255,252,246,.18); }
+  .ticket.dark .ticket-stub::before,.ticket.dark .ticket-stub::after{ background:var(--ink); border-color:rgba(255,252,246,.22); }
+  .ticket.dark .ticket-kicker{ color:var(--yolk); }
+  .ticket.dark .ticket-body p{ color:rgba(255,252,246,.72); }
+  .ticket.dark .ticket-body h3{ color:var(--paper); }
+  .ticket.dark .ticket-figure{ color:var(--yolk); }
+
+  .rate-note{ margin-top:26px; background:var(--paper-raised); border:1px dashed var(--line); border-radius:var(--radius-md); padding:22px; display:flex; gap:20px; flex-wrap:wrap; }
+  .rate-item{ flex:1 1 220px; }
+  .rate-item b{ display:block; font-size:14px; margin-bottom:4px; font-variant-numeric:tabular-nums; color:var(--clay); border-bottom:1px dashed var(--clay); padding-bottom:2px; }
+  .rate-item span{ font-size:12.5px; color:var(--clay); }
+
+  /* TABS */
+  .tab-bar{ display:flex; gap:8px; flex-wrap:wrap; margin:26px 0 22px; }
+  .tab-btn{ padding:10px 18px; border-radius:999px; border:1px solid var(--line); background:var(--paper-raised); font-weight:700; font-size:13.5px; cursor:pointer; color:var(--clay); font-family:inherit; }
+  .tab-btn:focus-visible{ outline:3px solid var(--petrol); outline-offset:2px; }
+  .tab-btn.active{ background:var(--ink); color:var(--yolk); border-color:var(--ink); }
+  .tab-panel{ display:none; }
+  .tab-panel.active{ display:block; }
+
+  .tbl-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:var(--radius-md); }
+  table.cmp{ width:100%; border-collapse:collapse; min-width:520px; }
+  table.cmp th, table.cmp td{ text-align:left; padding:13px 16px; font-size:13.5px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.cmp th{ background:var(--clay-soft); font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--clay); font-weight:700; }
+  table.cmp tr:last-child td{ border-bottom:none; }
+  table.cmp td.good{ color:var(--petrol); font-weight:700; }
+
+  .plist{ list-style:none; margin:16px 0 0; padding:0; display:flex; flex-direction:column; gap:10px; }
+  .plist li{ font-size:14px; color:var(--clay); padding-left:20px; position:relative; }
+  .plist li::before{ content:""; position:absolute; left:0; top:8px; width:7px; height:7px; border-radius:50%; background:var(--petrol); }
+  .plist b{ color:var(--ink); }
+
+  /* STEP LIST (numbered flows) */
+  .steplist{ list-style:none; margin:16px 0 0; padding:0; display:flex; flex-direction:column; gap:14px; counter-reset:step; max-width:66ch; }
+  .steplist li{ display:flex; gap:14px; align-items:flex-start; }
+  .steplist li::before{ content:counter(step); counter-increment:step; flex:0 0 28px; width:28px; height:28px; border-radius:50%; background:var(--petrol-soft); color:var(--petrol); font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+  .steplist-content{ display:flex; flex-direction:column; gap:2px; padding-top:3px; }
+  .steplist-content b{ font-size:14px; color:var(--ink); }
+  .steplist-content span{ font-size:13px; color:var(--clay); }
+  .status-ok{ color:var(--petrol); font-weight:700; }
+  .status-bad{ color:var(--danger); font-weight:700; }
+
+  .quote{ margin-top:32px; padding:26px 28px; border-radius:var(--radius-md); background:var(--yolk-pale); }
+  .quote p{ font-size:17.5px; font-weight:700; color:#241B0E; max-width:60ch; }
+  .quote span{ display:block; margin-top:10px; font-size:12.5px; font-weight:700; color:#5b4a1f; text-transform:uppercase; letter-spacing:.04em; }
+
+  /* RATES MODAL */
+  .modal-overlay{ position:fixed; inset:0; background:rgba(20,14,8,.55); display:flex; align-items:center; justify-content:center; padding:24px; z-index:60; opacity:0; pointer-events:none; transition:opacity .25s ease; }
+  .modal-overlay.open{ opacity:1; pointer-events:auto; }
+  .modal-panel{ background:var(--paper-raised); border-radius:var(--radius-md); max-width:640px; width:100%; max-height:82vh; overflow:auto; padding:28px 26px; box-shadow:var(--shadow); transform:translateY(16px); transition:transform .25s ease; }
+  .modal-overlay.open .modal-panel{ transform:translateY(0); }
+  .modal-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+  .modal-close{ all:unset; cursor:pointer; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--clay); flex:0 0 auto; }
+  .modal-close:hover{ background:var(--clay-soft); }
+  .modal-close:focus-visible{ outline:2px solid var(--petrol); }
+  .modal-updated{ font-size:12.5px; color:var(--clay); margin-top:6px; }
+  .rates-btn{ display:inline-flex; align-items:center; gap:10px; }
+  .rate-search{ display:block; width:100%; margin-top:16px; padding:12px 16px; border-radius:12px; border:1px solid var(--line); background:var(--paper); color:var(--ink); font-size:14px; font-family:inherit; }
+  .rate-search:focus-visible{ outline:2px solid var(--petrol); outline-offset:1px; }
+  table.cmp td.num{ text-align:right; font-variant-numeric:tabular-nums; }
+  table.cmp td.hi{ color:var(--petrol); font-weight:700; }
+
+  /* ROUTE (reference, condensed) */
+  .route{ position:relative; margin-top:40px; padding-left:64px; }
+  .route-spine{ position:absolute; left:22px; top:6px; bottom:6px; width:2px; background-image:repeating-linear-gradient(to bottom, var(--line) 0 8px, transparent 8px 16px); }
+  .route-dot{ position:absolute; left:14px; top:0; width:18px; height:18px; border-radius:50%; background:var(--yolk); border:3px solid var(--paper); box-shadow:0 0 0 3px var(--petrol); transition:top .12s linear; z-index:2; }
+  .stop{ position:relative; padding-bottom:40px; }
+  .stop:last-child{ padding-bottom:0; }
+  .stop-num{ position:absolute; left:-64px; top:-2px; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; background:var(--paper-raised); border:2px solid var(--line); color:var(--clay); transition:background .25s ease, border-color .25s ease, color .25s ease, transform .25s ease; }
+  .stop.active .stop-num{ background:var(--yolk); border-color:var(--yolk-deep); color:#241B0E; transform:scale(1.08); }
+  .stop h3{ font-size:17px; margin-bottom:5px; }
+  .stop p{ color:var(--clay); font-size:14px; max-width:52ch; }
+  .stop .badge{ display:inline-block; margin-top:8px; font-size:11.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--petrol); background:var(--petrol-soft); padding:4px 10px; border-radius:999px; }
+
+  /* COURIER STEPS horizontal */
+  .csteps{ display:flex; gap:16px; overflow-x:auto; margin-top:28px; padding-bottom:10px; }
+  .cstep{ flex:0 0 220px; background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px; }
+  .cstep b{ display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:50%; background:var(--petrol-soft); color:var(--petrol); font-size:13px; margin-bottom:12px; }
+  .cstep h4{ font-size:14.5px; margin:0 0 6px; }
+  .cstep p{ font-size:13px; color:var(--clay); }
+
+  /* LK MOCK */
+  .lk-window{ margin-top:28px; border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--line); box-shadow:var(--shadow); }
+  .lk-chrome{ background:var(--clay-soft); padding:10px 16px; display:flex; gap:6px; }
+  .lk-dot{ width:9px; height:9px; border-radius:50%; background:var(--line); }
+  .lk-body{ display:flex; min-height:300px; background:var(--paper-raised); }
+  .lk-side{ width:180px; flex:0 0 auto; border-right:1px solid var(--line); padding:16px 10px; display:flex; flex-direction:column; gap:2px; }
+  .lk-side button{ all:unset; cursor:pointer; padding:10px 12px; border-radius:10px; font-size:13.5px; font-weight:600; color:var(--clay); }
+  .lk-side button.active{ background:var(--yolk-pale); color:#241B0E; }
+  .lk-side button:focus-visible{ outline:2px solid var(--petrol); }
+  .lk-main{ flex:1; padding:24px; min-width:0; }
+  .lk-main h4{ font-size:16px; margin:0 0 8px; }
+  .lk-main p{ font-size:13.5px; color:var(--clay); margin-bottom:14px; max-width:56ch;}
+  .lk-fact{ display:inline-block; font-size:12px; font-weight:700; background:var(--petrol-soft); color:var(--petrol); padding:5px 10px; border-radius:999px; margin:4px 6px 0 0; }
+  @media(max-width:640px){ .lk-side{ width:112px; } .lk-side button{ font-size:11.5px; padding:9px 6px;} }
+
+  .role-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:22px; }
+  @media(max-width:820px){ .role-grid{grid-template-columns:1fr;} }
+  .role-card{ background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px; }
+  .role-card h4{ font-size:15px; margin:0 0 8px; }
+  .role-card p{ font-size:13.5px; color:var(--clay); }
+
+  .support-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:12px; }
+  @media(max-width:820px){ .support-grid{grid-template-columns:1fr;} }
+  .support-card{ background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-md); padding:22px; }
+  .support-card h4{ font-size:15px; margin:0 0 8px; }
+  .support-card p{ font-size:13.5px; color:var(--clay); margin-bottom:10px;}
+  .support-card a{ font-size:12.5px; font-weight:700; color:var(--petrol); text-decoration:none; word-break:break-all; }
+
+  /* FAQ */
+  .faq-list{ display:flex; flex-direction:column; gap:12px; }
+  .faq-item{ border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--paper-raised); overflow:hidden; }
+  .faq-q{ width:100%; text-align:left; background:none; border:0; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:19px 22px; font-size:16px; font-weight:700; color:var(--ink); font-family:inherit; }
+  .faq-q:focus-visible{ outline:3px solid var(--petrol); outline-offset:-3px; }
+  .faq-plus{ flex:0 0 auto; width:22px; height:22px; position:relative; }
+  .faq-plus::before,.faq-plus::after{ content:""; position:absolute; background:var(--petrol); border-radius:2px; transition:transform .3s ease; }
+  .faq-plus::before{ left:0; top:10px; width:22px; height:2px; }
+  .faq-plus::after{ left:10px; top:0; width:2px; height:22px; }
+  .faq-item.open .faq-plus::after{ transform:rotate(90deg); }
+  .faq-a{ max-height:0; overflow:hidden; transition:max-height .3s ease; }
+  .faq-a p{ padding:0 22px 22px; color:var(--clay); font-size:14.5px; max-width:60ch; }
+
+  /* FOOTER */
+  .footer{ background:var(--ink); color:var(--paper); border-radius:var(--radius-lg); margin:0 clamp(20px,5vw,56px) clamp(48px,8vw,96px); padding:clamp(38px,6vw,60px); position:relative; overflow:hidden; }
+  .footer::before{ content:""; position:absolute; width:320px; height:320px; border-radius:50%; background:var(--yolk); opacity:.14; right:-90px; bottom:-120px; }
+  .footer h2{ font-size:clamp(25px,3.4vw,36px); color:var(--paper); max-width:18ch; position:relative; }
+  .footer-note{ color:rgba(255,252,246,.6); margin-top:14px; max-width:52ch; position:relative; }
+  .footer-ways{ display:flex; gap:26px; flex-wrap:wrap; margin-top:32px; position:relative; }
+  .way{ display:flex; gap:12px; align-items:flex-start; max-width:220px; }
+  .way b{ display:block; color:var(--yolk); font-size:13.5px; margin-bottom:4px; }
+  .way span{ color:rgba(255,252,246,.68); font-size:13px; }
+
+  .draft-flag{ position:fixed; left:18px; bottom:18px; z-index:20; font-size:12px; font-weight:700; letter-spacing:.03em; background:var(--yolk); color:#241B0E; padding:9px 14px 10px; border-radius:10px; box-shadow:var(--shadow-soft); transform:rotate(-3deg); border:1px solid rgba(28,20,13,.15); max-width:200px; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <div class="nav-brand"><span class="nav-mark" aria-hidden="true"></span> Еда × Парки</div>
+      <div class="nav-links">
+        <a href="#tools">Инструменты</a>
+        <a href="#proapp">Приложение ПРО</a>
+        <a href="#courier">Курьер</a>
+        <a href="#economics">Экономика</a>
+        <a href="#playbook">Найм</a>
+        <a href="#transparency">Прозрачность</a>
+        <a href="#support">Поддержка</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <a class="btn btn-primary btn-sm nav-cta" href="#tools">К диспетчерской</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-blob" aria-hidden="true"></div>
+    <div class="wrap hero-inner">
+      <span class="tag">Гид для подключённых парков</span>
+      <h1>Диспетчерская, кабинет<br>и правила — в одном месте</h1>
+      <p class="lead">Вы уже подключены к Яндекс Еде. Здесь — как выглядят и работают диспетчерская Fleet и личный кабинет, как добавить курьера и на чём вы зарабатываете.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#economics">Начать зарабатывать</a>
+        <a class="btn btn-ghost" href="#playbook">Как привлекать курьеров</a>
+      </div>
+      <div class="hero-start"><span class="pin-dot" aria-hidden="true"></span> Быстрый доступ — раздел «Инструменты партнёра» ниже</div>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="wrap">
+      <div class="stats-grid reveal">
+        <div class="stat"><b data-count="400" data-suffix="+">0</b><span>городов присутствия</span></div>
+        <div class="stat"><b data-count="140" data-suffix=" тыс.">0</b><span>партнёров сервиса</span></div>
+        <div class="stat"><b data-count="29" data-suffix="%" data-prefix="+">0</b><span>рост GTV к 2025 году</span></div>
+        <div class="stat"><b data-count="200" data-suffix="+">0</b><span>дней в среднем «живёт» курьер</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tools">
+    <div class="wrap">
+      <div class="head-block reveal">
+        <span class="tag petrol">Для подключённых парков</span>
+        <h2>Диспетчерская и личный кабинет — подробно</h2>
+        <p class="lead">Два инструмента для ежедневной работы. Курьер не уходит из парка — он доставляет заказы Еды через ту же диспетчерскую, а вы получаете комиссию с каждого заказа.</p>
+      </div>
+
+      <h3 class="sub reveal d1">Диспетчерская Fleet</h3>
+      <p class="reveal d1" style="margin-top:6px; font-size:14.5px; color:var(--clay); max-width:60ch;">Привычный веб-интерфейс в браузере — тот же инструмент, что в Такси и Доставке. Доступ открывается сразу при подключении и сейчас предоставляется бесплатно.</p>
+      <div class="gear-grid reveal d1" style="margin-top:20px;">
+        <div class="gear-card"><div class="gear-icon">01</div><h4>Регистрация курьеров</h4><p>Заводите и выводите курьеров в Еду прямо из привычного интерфейса.</p></div>
+        <div class="gear-card"><div class="gear-icon">02</div><h4>Курьеры на линии</h4><p>Видите, кто сейчас на линии, в реальном времени.</p></div>
+        <div class="gear-card"><div class="gear-icon">03</div><h4>Статистика активности</h4><p>Отслеживаете активность по каждому курьеру без сторонних таблиц.</p></div>
+        <div class="gear-card"><div class="gear-icon">04</div><h4>Быстрый вывод на линию</h4><p>Курьер может выйти на маршрут в день подключения.</p></div>
+      </div>
+      <p class="reveal d1" style="margin-top:14px;"><a href="https://parks.yandex/ru-ru/moskva/knowledge-base/start?section=startfood" target="_blank" rel="noopener" style="font-size:13px; font-weight:700; color:var(--petrol); text-decoration:none;">Подробнее о диспетчерской Еды →</a></p>
+
+      <h3 class="sub reveal d2">Личный кабинет партнёра</h3>
+      <p class="reveal d2" style="margin-top:6px; font-size:14.5px; color:var(--clay); max-width:60ch;">В левом меню кабинета — шесть разделов: Лиды, Ставки, Управление доступом, Задания, Уведомления, Настройки.</p>
+      <div class="lk-window reveal d2" data-tabgroup="lk">
+        <div class="lk-chrome"><span class="lk-dot"></span><span class="lk-dot"></span><span class="lk-dot"></span></div>
+        <div class="lk-body">
+          <div class="lk-side">
+            <button class="active" data-tab="leads">Лиды</button>
+            <button data-tab="rates">Ставки</button>
+            <button data-tab="access">Управление доступом</button>
+            <button data-tab="tasks">Задания</button>
+            <button data-tab="notify">Уведомления</button>
+            <button data-tab="settings">Настройки</button>
+          </div>
+          <div class="lk-main">
+            <div class="tab-panel active" data-panel="leads">
+              <h4>Лиды</h4>
+              <p>Список приглашённых по вашей партнёрской ссылке кандидатов: статус, город, число заказов, вознаграждение. Клик по строке открывает карточку с контактами.</p>
+              <span class="lk-fact">Кнопка «Скачать CSV» с выбором периода</span>
+              <span class="lk-fact">7 дней закрепления лида за источником</span>
+              <span class="lk-fact">Платят только за новых — 60+ дней без заказов</span>
+            </div>
+            <div class="tab-panel" data-panel="rates">
+              <h4>Ставки</h4>
+              <p>Доступно роли «администратор». Таблица по городам и типу лида: базовая ставка тарифа, ставка за каждый заказ сверх целевого действия, максимальный доход за курьера, приоритет города.</p>
+              <span class="lk-fact">Базовая ставка — за 5 заказов за 20 дней</span>
+              <span class="lk-fact">Ставка за заказ — с 1-го по 100-й заказ</span>
+              <span class="lk-fact">Максимум — 130 заказов/20 дней (Onboard–Junior) или 100 (Middle–Senior)</span>
+            </div>
+            <div class="tab-panel" data-panel="access">
+              <h4>Управление доступом</h4>
+              <p>Кнопка «+» добавляет участника. В таблице — имя, часть Yandex ID, статус («Активный» / «Отключённый»).</p>
+              <span class="lk-fact">Один администратор на аккаунт</span>
+              <span class="lk-fact">Пользователь видит только свои лиды</span>
+              <span class="lk-fact">Куратор видит все лиды, но без своей ссылки</span>
+            </div>
+            <div class="tab-panel" data-panel="tasks">
+              <h4>Задания</h4>
+              <p>Примеры заданий от сервиса — набор зависит от вашего тарифа (например, «Эксперт»). Актуальный список смотрите в своём кабинете.</p>
+            </div>
+            <div class="tab-panel" data-panel="notify">
+              <h4>Уведомления</h4>
+              <p>Новостная лента с ключевыми обновлениями от Яндекс Еды: изменения условий, новые инструменты, важные даты. Стоит заглядывать регулярно.</p>
+            </div>
+            <div class="tab-panel" data-panel="settings">
+              <h4>Настройки</h4>
+              <p>Логин, действующий тариф, вкладки «Профиль» и «Параметры», смена языка интерфейса или аккаунта — всё в одном месте.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="role-grid reveal d2">
+        <div class="role-card"><h4>Администратор</h4><p>Один на аккаунт. Видит всех лидов, создаёт пользователей, управляет ставками и доступом.</p></div>
+        <div class="role-card"><h4>Пользователь</h4><p>Видит только своих лидов. Нет доступа к вкладкам «Ставки» и «Биллинг».</p></div>
+        <div class="role-card"><h4>Куратор</h4><p>Помощник администратора — видит все лиды организации, но без своей партнёрской ссылки. Сервис не платит пользователям и кураторам напрямую — это сотрудники парка, выплаты и договорённости с ними парк определяет сам.</p></div>
+      </div>
+
+      <h3 class="sub reveal d3" id="leadflow">Как добавить лида вручную</h3>
+      <ol class="steplist reveal d3">
+        <li><div class="steplist-content"><b>Нажмите «+» в разделе «Лиды»</b><span>Кнопка в левом верхнем углу таблицы лидов.</span></div></li>
+        <li><div class="steplist-content"><b>Введите номер телефона и нажмите «Проверить»</b><span>Система покажет <span class="status-ok">«Берём»</span> — можно оформлять, или <span class="status-bad">«Не берём»</span> — кандидат уже сотрудничает с сервисом.</span></div></li>
+        <li><div class="steplist-content"><b>Заполните анкету</b><span>Фамилия, имя, отчество, дата рождения, телефон, email, телеграм — и нажмите «Далее».</span></div></li>
+        <li><div class="steplist-content"><b>Нажмите «Сохранить»</b><span>Лид создан и появится в таблице в статусе «Создан» примерно через 10 минут.</span></div></li>
+        <li><div class="steplist-content"><b>Заполните форму активации для курьерского центра</b><span>ID курьера, тип кандидата («новичок» или «восстановление»), юрлицо, город, сервис доставок, тип передвижения. Обработка — около 15 минут.</span></div></li>
+        <li><div class="steplist-content"><b>Дождитесь уведомления от специалистов активации</b><span>После него курьер получает инвентарь в ПВЗ и заходит в приложение ПРО.</span></div></li>
+      </ol>
+      <p class="reveal d3" style="margin-top:16px; font-size:12.5px; color:var(--clay); max-width:66ch;">Проверка на лидовость смотрит на последние 60 дней сотрудничества кандидата с сервисами Яндекса — Еда, Лавка, Такси, Доставка, Маркет.</p>
+    </div>
+  </section>
+
+  <section id="proapp">
+    <div class="wrap">
+      <div class="head-block reveal">
+        <span class="tag">Инструмент курьера</span>
+        <h2>Что курьер видит в приложении ПРО</h2>
+        <p class="lead">Стоит понимать, чем пользуется ваш курьер каждый день — это упрощает разговор с ним и объяснение спорных вопросов.</p>
+      </div>
+
+      <h3 class="sub reveal d1">Приложение ПРО</h3>
+      <p class="reveal d1" style="margin-top:6px; font-size:14.5px; color:var(--clay); max-width:60ch;">Основной инструмент, на котором курьер получает и доставляет заказы — приложение проводит по сценарию, даёт подсказки, переводится на нужный язык.</p>
+      <div class="chiprow reveal d1">
+        <span class="chip">Карты</span><span class="chip">Блок обучения</span><span class="chip">Программа лояльности</span><span class="chip">Бонусы и предложения</span>
+      </div>
+
+      <h3 class="sub reveal d2">Прогресс и «прошки»</h3>
+      <p class="reveal d2" style="margin-top:6px; font-size:14.5px; color:var(--clay); max-width:60ch;">Программа лояльности: курьер получает «прошки» за задания и заказы — чем больше, тем лучше бонусы.</p>
+      <div class="chiprow reveal d2">
+        <span class="chip">Юридическая помощь</span><span class="chip">Скидки на питание</span><span class="chip">Мобильная связь</span><span class="chip">Аренда транспорта</span><span class="chip">Без корректировок за уход со слота</span>
+      </div>
+
+      <h3 class="sub reveal d3">Как курьер выбирает слоты</h3>
+      <ol class="steplist reveal d3">
+        <li><div class="steplist-content"><b>«Добавить слот»</b><span>Кнопка в приложении ПРО.</span></div></li>
+        <li><div class="steplist-content"><b>Выбрать день</b><span>В расписании на ближайшую неделю.</span></div></li>
+        <li><div class="steplist-content"><b>Выбрать район</b><span>Списком или прямо по карте — видно надбавку к заказу по зонам.</span></div></li>
+        <li><div class="steplist-content"><b>Выбрать время</b><span>С ожидаемым доходом за час по каждому интервалу.</span></div></li>
+      </ol>
+
+      <h3 class="sub reveal d3">Смена типа передвижения</h3>
+      <p class="reveal d3" style="margin-top:6px; font-size:14.5px; color:var(--clay); max-width:64ch;">Курьер сам меняет тип в любое время: профиль → «Способ передвижения». «Пеший», «вело» и «электровело» переключаются сразу; «авто» и «мото» — через поддержку. Если курьер уже работал в Доставке с типом «Авто» — смена пройдёт быстрее.</p>
+    </div>
+  </section>
+
+  <section id="courier">
+    <div class="wrap">
+      <div class="head-block reveal">
+        <span class="tag">Кто такой курьер</span>
+        <h2>Человек, который выходит на маршрут</h2>
+        <p class="lead">Специалист по доставке готовой еды и других товаров от ресторанов и магазинов-партнёров до клиента. Получает заказ, доставляет его в срок и поддерживает высокий уровень сервиса.</p>
+      </div>
+      <div class="chiprow reveal d1">
+        <span class="chip">Пунктуальность</span><span class="chip">Организованность</span><span class="chip">Коммуникабельность</span><span class="chip">Физическая подготовка</span>
+      </div>
+
+      <h3 class="sub reveal d1">Из чего складывается доход</h3>
+      <div class="formula reveal d1">
+        <code>Оплата за заказ = ₽ за километр + базовая стоимость заказа + ₽ за заказ (тип слота и спрос) + платное ожидание + ₽ расчётного времени на доставку</code>
+        <p>Гибкая система — курьер с любым типом передвижения получает справедливую оплату. Примерный калькулятор дохода уточняйте у менеджера.</p>
+      </div>
+
+      <h3 class="sub reveal d2">Кто может стать курьером</h3>
+      <div class="doc-grid reveal d2" style="max-width:420px; grid-template-columns:1fr;">
+        <div class="doc-card primary">
+          <h4>Гражданин РФ</h4>
+          <ul><li>Паспорт</li><li>Регистрация</li><li>СНИЛС (при наличии)</li><li>ИНН</li></ul>
+          <div class="doc-note">Важно: сейчас оформление возможно строго при подтверждённом статусе самозанятого.</div>
+        </div>
+      </div>
+      <p class="reveal d2" style="margin-top:14px; font-size:12.5px; color:var(--clay); max-width:60ch;">По данным самой свежей версии материалов о запуске через парки — другие категории (СНГ, ЕАЭС, иностранные студенты), которые встречались в более ранних презентациях, сейчас не заявлены.</p>
+
+      <h3 class="sub reveal d3">Города присутствия</h3>
+      <p class="reveal d3" style="margin-top:6px; font-size:14.5px; color:var(--clay); max-width:64ch;">Сервис работает в 400+ городах во всех часовых поясах. В части городов есть хаб — можно работать и онлайн, и офлайн; в остальных — только онлайн.</p>
+      <div class="tbl-wrap reveal d3" style="margin-top:16px;">
+        <table class="cmp">
+          <tr><th>Регион</th><th>Город с хабом</th><th>Ещё online-города (примеры)</th></tr>
+          <tr><td>Север</td><td class="good">Санкт-Петербург</td><td>Белгород, Великий Новгород, Калининград, Псков, Тверь</td></tr>
+          <tr><td>Юг</td><td class="good">Краснодар, Ростов-на-Дону</td><td>Адлер, Волгоград, Сочи, Ставрополь</td></tr>
+          <tr><td>Центр</td><td class="good">Нижний Новгород</td><td>Иваново, Вологда, Рязань, Ярославль</td></tr>
+          <tr><td>Татарстан</td><td class="good">Казань</td><td>Альметьевск, Ижевск, Набережные Челны</td></tr>
+          <tr><td>Сибирь</td><td class="good">Новосибирск</td><td>Барнаул, Владивосток, Иркутск, Красноярск</td></tr>
+          <tr><td>Урал</td><td class="good">Екатеринбург</td><td>Оренбург, Сургут, Тюмень, Челябинск</td></tr>
+        </table>
+      </div>
+      <p class="reveal d3" style="margin-top:12px; font-size:12.5px; color:var(--clay);">Полный список городов и точная зона покрытия — в диспетчерской Fleet.</p>
+    </div>
+  </section>
+
+  <section id="gear">
+    <div class="wrap">
+      <div class="head-block reveal">
+        <span class="tag petrol">Для мотивации курьера</span>
+        <h2>Что курьер получает, кроме заказов</h2>
+      </div>
+      <div class="gear-grid reveal d1">
+        <div class="gear-card"><div class="gear-icon">ТК</div><h4>Термокороб</h4><p>После добавления в диспетчерскую — забрать в ПВЗ Яндекс.Маркета в своём городе. Свой термокороб в хорошем состоянии подойдёт при фотоконтроле — новый получать не придётся.</p></div>
+        <div class="gear-card"><div class="gear-icon">ЭК</div><h4>Экипировка</h4><p>В Москве — плащ и/или зимняя куртка после ~300 доставок: водоотталкивающее покрытие, капюшон, дождевик. В регионах набор может отличаться.</p></div>
+        <div class="gear-card"><div class="gear-icon">ЯБ</div><h4>Яндекс Байк</h4><p>Запас хода до 80 км, управление через ПРО, льготная аренда за 1 ₽ для курьеров, подключённых через парк.</p></div>
+        <div class="gear-card"><div class="gear-icon">БН</div><h4>Бенефиты</h4><p>Страхование на слотах у всех, льготное — вне слотов, доп. доход за персональные цели, реферальная программа, новостные каналы по городам.</p></div>
+      </div>
+
+      <div class="promo reveal d2">
+        <div class="promo-inner">
+          <div>
+            <h4>Акция запуска: бонус за первые 30 доставок</h4>
+            <p>Действовала в июне 2026 для курьеров, подключённых через парки — плюс повышенная минимальная гарантия дохода в час. Точные условия и суммы — у менеджера.</p>
+          </div>
+          <span class="promo-expired">Период уже завершён — сверьте даты</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="economics">
+    <div class="wrap">
+      <div class="head-block reveal">
+        <span class="tag">Экономика</span>
+        <h2>Три источника дохода парка</h2>
+      </div>
+      <div class="econ-grid">
+        <div class="ticket reveal">
+          <div class="ticket-stub"><span class="ticket-kicker">Основной источник</span></div>
+          <div class="ticket-body"><h3>Комиссия с заказов</h3><p>Начисляется ежедневно, автоматически. Чем активнее и дольше курьер на линии — тем выше доход парка.</p><div class="ticket-figure">Растёт вместе с активностью курьеров</div></div>
+        </div>
+        <div class="ticket reveal d1">
+          <div class="ticket-stub"><span class="ticket-kicker">Стартовый доход</span></div>
+          <div class="ticket-body"><h3>Бонус за нового курьера</h3><p>Разовая выплата за верифицированного новичка — оплата за каждый заказ, до 100 заказов в первые 30 дней.</p><div class="ticket-figure"><em>сумма зависит от города — уточняйте у менеджера</em></div></div>
+        </div>
+        <div class="ticket dark reveal d2">
+          <div class="ticket-stub"><span class="ticket-kicker">Перспектива</span></div>
+          <div class="ticket-body"><h3>Персональные тарифы</h3><p>Активным паркам — улучшенные условия, геоцентричные бонусы и приоритет в нужных зонах. Вводится поэтапно.</p><div class="ticket-figure">Следующий шаг развития программы</div></div>
+        </div>
+      </div>
+
+      <div class="rate-note reveal d3">
+        <div class="rate-item"><b>тут будут цифры</b><span>Базовая ставка тарифа — за курьера с 5 заказами за 20 дней с момента регистрации по ссылке</span></div>
+        <div class="rate-item"><b>130 / 100 заказов</b><span>Порог для максимальной выплаты за 20 дней — на тарифах Onboard–Junior / Middle–Senior соответственно</span></div>
+      </div>
+      <p class="reveal d3" style="margin-top:16px; font-size:12.5px; color:var(--clay); max-width:70ch;">Ставки различаются по городу и типу передвижения и обновляются раз в 2 недели. Точные цифры сюда не выносим — актуальные значения смотрите в личном кабинете, раздел «Ставки».</p>
+
+      <button class="btn btn-ghost rates-btn reveal d3" data-modal-open="ratesModal" type="button" style="margin-top:22px;">
+        <span class="pin-dot" aria-hidden="true" style="width:8px; height:8px; box-shadow:0 0 0 4px var(--petrol-soft);"></span>
+        Актуальные ставки по городам
+      </button>
+
+      <div class="modal-overlay" id="ratesModal" aria-hidden="true">
+        <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="ratesTitle">
+          <div class="modal-head">
+            <div>
+              <h3 id="ratesTitle" style="font-size:20px; margin:0;">Актуальные ставки по городам</h3>
+              <p class="modal-updated">Демо-макет интерфейса — цифры не приводятся · <span id="ratesCount">152</span> городов в диспетчерской</p>
+            </div>
+            <button class="modal-close" data-modal-close type="button" aria-label="Закрыть"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+          </div>
+          <input type="text" id="rateSearch" class="rate-search" placeholder="Найти город…" autocomplete="off">
+          <div class="tbl-wrap" style="margin-top:12px; max-height:360px; overflow-y:auto;">
+            <table class="cmp">
+              <thead><tr><th>Город</th><th>Пеший / вело</th><th>Автокурьер</th><th>Макс. за 100</th><th>Макс. авто за 100</th></tr></thead>
+              <tbody id="ratesBody"></tbody>
+            </table>
+          </div>
+          <p id="ratesEmpty" style="display:none; padding:14px 4px 0; font-size:13.5px; color:var(--clay);">Город не найден — проверьте написание или уточните у менеджера.</p>
+          <p style="margin-top:14px; font-size:12px; color:var(--clay);">Выделенная ставка автокурьера — там, где она выше пешей/велосипедной. Приватные условия — в личном кабинете, раздел «Ставки».</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="playbook">
+    <div class="wrap">
+      <div class="head-block reveal">
+        <span class="tag petrol">Обучение найму</span>
+        <h2>Как приводить курьеров, которые останутся</h2>
+        <p class="lead">Парк — ключевое звено: находит, оформляет, сопровождает, удерживает и возвращает курьеров. Ниже — сжатый гид по каждому этапу привлечения.</p>
+      </div>
+
+      <div data-tabgroup="playbook">
+        <div class="tab-bar reveal d1">
+          <button class="tab-btn active" data-tab="ads">Объявления</button>
+          <button class="tab-btn" data-tab="platforms">Площадки</button>
+          <button class="tab-btn" data-tab="audience">Аудитория</button>
+          <button class="tab-btn" data-tab="content">Контент и трафик</button>
+        </div>
+
+        <div class="tab-panel active" data-panel="ads">
+          <ul class="plist">
+            <li><b>Визуал</b> — качественный и релевантный, без стоков.</li>
+            <li><b>Заголовок</b> — краткий и цепляющий, сразу передаёт суть.</li>
+            <li><b>Текст</b> — раскрывает преимущества, отвечает на вопросы, ведёт к действию.</li>
+            <li>Чего избегать: начала с «Вакансия»/«Требуется», КАПСА и цифр, которые невозможно подтвердить.</li>
+          </ul>
+          <div class="tbl-wrap" style="margin-top:18px;">
+            <table class="cmp">
+              <tr><th>Проблема в тексте</th><th>Как исправить</th></tr>
+              <tr><td>«Оплата высокая. Условия обсуждаются»</td><td class="good">«2700–3200 ₽ в день»</td></tr>
+              <tr><td>«Гибкие смены» (без деталей)</td><td class="good">«3–4 часа в день или полный день»</td></tr>
+              <tr><td>«Официальное оформление» (долгая процедура)</td><td class="good">«Оформление за 15 минут — без офиса»</td></tr>
+              <tr><td>Шаблонные фразы («бонусы», «стабильная компания»)</td><td class="good">Конкретика: «выплаты каждый день», «работай в своём районе»</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-panel="platforms">
+          <div class="tbl-wrap">
+            <table class="cmp">
+              <tr><th>Площадка</th><th>Аудитория</th><th>Особенность</th></tr>
+              <tr><td>Авито</td><td>Студенты, подработка, без опыта</td><td>Отклик за 1–3 часа, бесплатное размещение</td></tr>
+              <tr><td>Юла</td><td>Мобильная молодая аудитория</td><td>Бесплатных услуг нет, оплата за продвижение</td></tr>
+              <tr><td>hh.ru</td><td>Более квалифицированные соискатели</td><td>Дороже, но отклики качественнее</td></tr>
+              <tr><td>Работа.ру</td><td>Массовый сегмент, малые города</td><td>Бесплатно при подписке СберБизнес</td></tr>
+              <tr><td>SuperJob</td><td>Аудитория среднего возраста</td><td>Оплата за отклик или за контакт в базе резюме</td></tr>
+            </table>
+          </div>
+          <p style="margin-top:14px; font-size:13.5px; color:var(--clay);">Ещё есть Фарпост, Зарплата.ру, Хабр Карьера и Авирона — с разными условиями бесплатного доступа к базе резюме.</p>
+        </div>
+
+        <div class="tab-panel" data-panel="audience">
+          <div class="tbl-wrap">
+            <table class="cmp">
+              <tr><th>Сегмент</th><th>Мотивация</th><th>Каналы</th></tr>
+              <tr><td>Студенты</td><td>Гибкий график, быстрые выплаты</td><td>Соцсети, чаты, учебные комьюнити</td></tr>
+              <tr><td>Начинающие специалисты</td><td>Быстрый старт, прозрачные условия</td><td>Джобборды, ярмарки вакансий</td></tr>
+              <tr><td>Люди без образования</td><td>Быстрый доход, понятный процесс</td><td>Джобборды, центры занятости</td></tr>
+              <tr><td>Фрилансеры</td><td>Свободный график, доп. доход</td><td>Соцсети, фриланс-платформы</td></tr>
+              <tr><td>Иностранцы и иногородние</td><td>Быстрый старт, минимум требований</td><td>Группы и чаты, центры помощи</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-panel="content">
+          <ul class="plist">
+            <li><b>Типы контента</b> — информационный, мотивационный, образовательный, вовлекающий, сервисный.</li>
+            <li><b>Форматы</b> — посты, карточки, сториз, видео.</li>
+            <li><b>Таргет</b> — аудитория, креатив, формат. CTR держится в диапазоне 1,5–4%.</li>
+            <li>Таргет не обязателен в маленьких городах с сарафанным радио или при достаточном потоке заявок с джоббордов.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="quote reveal d2">
+        <p>«Работа на качество, а не гонка за количеством без поддержки и инструментов реактивации исполнителей».</p>
+        <span>Из материалов по обучению найму</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="courierpath">
+    <div class="wrap">
+      <div class="head-block reveal">
+        <span class="tag">После регистрации</span>
+        <h2>Путь курьера — от отклика до линии</h2>
+        <p class="lead">Каждый этап — фильтр. Чем быстрее парк объясняет и напоминает, тем меньше кандидатов теряется по пути.</p>
+      </div>
+      <div class="csteps reveal d1">
+        <div class="cstep"><b>1</b><h4>Отклик и касание</h4><p>Подтверждение телефона «привязывает» курьера к парку — важен быстрый контакт.</p></div>
+        <div class="cstep"><b>2</b><h4>Регистрация</h4><p>Ввод личных данных и подготовка документов в приложении.</p></div>
+        <div class="cstep"><b>3</b><h4>Инструктаж</h4><p>Короткое обучение в приложении открывает доступ к работе.</p></div>
+        <div class="cstep"><b>4</b><h4>Получение сумки</h4><p>Парк убеждается, что предыдущие этапы пройдены, прежде чем направить за термокоробом.</p></div>
+        <div class="cstep"><b>5</b><h4>Первая линия</h4><p>Поддержка курьера: заказы, выплаты, обращения.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="transparency">
+    <div class="wrap">
+      <div class="head-block reveal">
+        <span class="tag">Прозрачность</span>
+        <h2>Отчётность, выплаты и забота о курьерах</h2>
+      </div>
+
+      <h3 class="sub reveal d1">Отчётность и выплаты</h3>
+      <ul class="plist reveal d1" style="max-width:70ch;">
+        <li><b>Ежедневный отчёт</b> — каждое утро вам приходит консолидированный отчёт по активности и заработку ваших курьеров-партнёров за прошлый день.</li>
+        <li><b>Расчёт бонуса за привлечение</b> — сумма зависит от города доставки; актуальные бонусы уточняйте в чате поддержки или личном кабинете.</li>
+        <li><b>Детализация по заказам</b> — нужно свериться, когда курьер выполнял заказы? Поддержка поднимет детализацию по его ID — вручную разбирать не придётся.</li>
+        <li><b>Бонус и нарушения</b> — бонус не начисляется за заказы с нарушением стандартов сервиса; при частых нарушениях курьер может получить ограничение доступа к доставкам.</li>
+        <li>Если отчёт не пришёл вовремя — можно уточнить у персонального менеджера или в поддержке парков.</li>
+      </ul>
+
+      <h3 class="sub reveal d2">Забота о курьерах и разбор спорных ситуаций</h3>
+      <div class="quote reveal d2">
+        <p>«Яндекс Еда — в первую очередь компания, которая ценит своих пользователей и курьеров-исполнителей. Работа на качество, а не гонка за количеством без поддержки».</p>
+        <span>Из материалов по обучению найму</span>
+      </div>
+      <div class="chiprow reveal d2">
+        <span class="chip" style="background:var(--petrol-soft); color:var(--petrol);">до 90% вопросов курьера поддержка закрывает без эскалации</span>
+      </div>
+      <div class="doc-card reveal d3" style="max-width:660px; margin-top:20px;">
+        <h4>Когда обращение курьера не будет пересмотрено</h4>
+        <ul>
+          <li>Подтверждённая передача учётной записи курьера другим лицам</li>
+          <li>Алкогольное или наркотическое опьянение</li>
+          <li>Использование данных пользователя в личных целях</li>
+          <li>Причинение вреда здоровью пользователя, сотрудника ресторана или окружающих</li>
+          <li>Кража</li>
+          <li>Виновность в ДТП с тяжёлыми последствиями</li>
+          <li>Не пройден скоринг службы безопасности</li>
+          <li>Перманентное ограничение в админке такси без права пересмотра</li>
+        </ul>
+      </div>
+      <p class="reveal d3" style="margin-top:14px; font-size:13px; color:var(--clay); max-width:64ch;">Во всех остальных случаях корректировка или ограничение рассматриваются по существу — это и есть то самое максимальное внимание, а не формальный отказ.</p>
+    </div>
+  </section>
+
+  <section id="support">
+    <div class="wrap">
+      <div class="head-block reveal">
+        <span class="tag">Если что-то не так</span>
+        <h2>Поддержка и полезные ссылки</h2>
+      </div>
+      <div class="support-grid reveal d1">
+        <div class="support-card"><h4>Диспетчерская</h4><p>По активации курьеров — специалисты разберут любой вопрос прямо в интерфейсе.</p></div>
+        <div class="support-card"><h4>Персональный менеджер</h4><p>По договорам, сотрудничеству и взаиморасчётам, а также еженедельные встречи по росту и масштабированию парка.</p></div>
+        <div class="support-card"><h4>База знаний</h4><p>Максимум справочной информации о курьерах и для курьеров.</p><a href="https://pro.yandex.ru/ru-ru/moskva/knowledge-base/courier" target="_blank" rel="noopener">pro.yandex.ru/.../knowledge-base/courier</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="route">
+    <div class="wrap">
+      <div class="head-block reveal">
+        <span class="tag petrol">Справочно · если открываете новую точку</span>
+        <h2>Как выглядит подключение</h2>
+        <p class="lead">Вы это уже проходили — этот блок пригодится, если добавляете ещё один парк или точку.</p>
+      </div>
+      <div class="route" id="routeTrack">
+        <div class="route-spine" aria-hidden="true"></div>
+        <div class="route-dot" id="routeDot" aria-hidden="true"></div>
+        <div class="stop"><div class="stop-num">1</div><h3>Заявка</h3><p>Оставьте заявку через менеджера — это ни к чему не обязывает.</p></div>
+        <div class="stop"><div class="stop-num">2</div><h3>Договор</h3><p>Подписываете договор о сотрудничестве. Стандартные условия, без скрытых пунктов.</p></div>
+        <div class="stop"><div class="stop-num">3</div><h3>Личный кабинет и диспетчерская</h3><p>Открывается доступ к личному кабинету партнёра и диспетчерской Fleet.</p><span class="badge">сейчас бесплатно</span></div>
+        <div class="stop"><div class="stop-num">4</div><h3>Ставки</h3><p>Знакомитесь с актуальными ставками по городам и типам лида в личном кабинете.</p><span class="badge">обновляются раз в 2 недели</span></div>
+        <div class="stop"><div class="stop-num">5</div><h3>Информирование базы курьеров</h3><p>Рассказываете действующим курьерам о выгодном сотрудничестве, готовите офферы.</p></div>
+        <div class="stop"><div class="stop-num">6</div><h3>Поддержка и рост</h3><p>Курьеры получают поддержку 24/7. Вы — комиссию с каждой доставки и еженедельные встречи с персональным менеджером.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <div class="head-block reveal">
+        <span class="tag">Честно, без глянца</span>
+        <h2>Вопросы, которые задают чаще всего</h2>
+      </div>
+      <div class="faq-list reveal d1">
+        <div class="faq-item"><button class="faq-q"><span>Мы потеряем курьера из парка?</span><span class="faq-plus" aria-hidden="true"></span></button><div class="faq-a"><p>Нет. Курьер остаётся в парке — вы добавляете ему источник дохода, а не отдаёте его сервису.</p></div></div>
+        <div class="faq-item"><button class="faq-q"><span>Как проверить статус бонуса за курьера?</span><span class="faq-plus" aria-hidden="true"></span></button><div class="faq-a"><p>В личном кабинете, по номеру телефона — статус лида и начисление бонуса видно сразу, без запросов в поддержку.</p></div></div>
+        <div class="faq-item"><button class="faq-q"><span>Есть гарантированный минимум дохода парка?</span><span class="faq-plus" aria-hidden="true"></span></button><div class="faq-a"><p>Нет фиксированного минимума или максимума — доход зависит от числа и активности курьеров. Бонусы — по условиям договора о привлечении.</p></div></div>
+        <div class="faq-item"><button class="faq-q"><span>Можно подключить авто-курьеров?</span><span class="faq-plus" aria-hidden="true"></span></button><div class="faq-a"><p>Да — сервис привлекает пеших, велокурьеров и автокурьеров через парки.</p></div></div>
+        <div class="faq-item"><button class="faq-q"><span>У нас уже есть курьеры в Доставке — это проблема?</span><span class="faq-plus" aria-hidden="true"></span></button><div class="faq-a"><p>Нет, они могут параллельно работать в Еде. Сервисы не конкурируют между собой — это дополнительный доход парка.</p></div></div>
+        <div class="faq-item"><button class="faq-q"><span>Сложно разобраться в диспетчерской?</span><span class="faq-plus" aria-hidden="true"></span></button><div class="faq-a"><p>Это тот же интерфейс, что в Такси и Доставке, уже знакомый вашим диспетчерам. Специалисты диспетчерской помогут с любым вопросом по активации.</p></div></div>
+        <div class="faq-item"><button class="faq-q"><span>Это временный проект?</span><span class="faq-plus" aria-hidden="true"></span></button><div class="faq-a"><p>Нет — парковое привлечение курьеров является стратегическим приоритетом сервиса на годы вперёд.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="footer reveal">
+      <h2>Нужна помощь или хотите обсудить рост?</h2>
+      <p class="footer-note">Обратитесь к персональному менеджеру — по масштабированию, новым городам или любым вопросам по работе с курьерами.</p>
+      <div class="footer-ways">
+        <div class="way"><b>Менеджер</b><span>Еженедельные встречи по росту и масштабированию</span></div>
+        <div class="way"><b>Поддержка</b><span>Диспетчерская и поддержка парков — 24/7 по курьерам</span></div>
+        <div class="way"><b>База знаний</b><span>Все инструкции и обновления в одном месте</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="draft-flag">Кейс-проект Валентины Шешуновой · демо-макет онбординга, не официальная страница Яндекс Еды</div>
+</div>
+
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var revealEls = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    },{ threshold:.16 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  } else { revealEls.forEach(function(el){ el.classList.add('in'); }); }
+
+  function animateCount(el){
+    var target = parseFloat(el.dataset.count);
+    var suffix = el.dataset.suffix || '';
+    var prefix = el.dataset.prefix || '';
+    if(reduced){ el.textContent = prefix + target + suffix; return; }
+    var start = performance.now(), dur = 1300;
+    function tick(now){
+      var p = Math.min(1, (now-start)/dur);
+      var eased = 1 - Math.pow(1-p,3);
+      el.textContent = prefix + Math.round(target*eased) + suffix;
+      if(p<1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+  var counters = document.querySelectorAll('[data-count]');
+  if('IntersectionObserver' in window){
+    var cio = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ animateCount(e.target); cio.unobserve(e.target); } });
+    },{ threshold:.6 });
+    counters.forEach(function(el){ cio.observe(el); });
+  } else { counters.forEach(animateCount); }
+
+  document.querySelectorAll('.faq-item').forEach(function(item){
+    var btn = item.querySelector('.faq-q');
+    var panel = item.querySelector('.faq-a');
+    btn.addEventListener('click', function(){
+      var open = item.classList.toggle('open');
+      panel.style.maxHeight = open ? panel.scrollHeight + 'px' : null;
+    });
+  });
+
+  document.querySelectorAll('[data-tabgroup]').forEach(function(group){
+    var btns = group.querySelectorAll('[data-tab]');
+    var panels = group.querySelectorAll('[data-panel]');
+    btns.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        btns.forEach(function(b){ b.classList.remove('active'); });
+        panels.forEach(function(p){ p.classList.remove('active'); });
+        btn.classList.add('active');
+        var target = group.querySelector('[data-panel="'+btn.dataset.tab+'"]');
+        if(target) target.classList.add('active');
+      });
+    });
+  });
+
+  document.querySelectorAll('[data-modal-open]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var el = document.getElementById(btn.dataset.modalOpen);
+      if(el){ el.classList.add('open'); el.setAttribute('aria-hidden','false'); }
+    });
+  });
+  document.querySelectorAll('[data-modal-close]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var overlay = btn.closest('.modal-overlay');
+      if(overlay){ overlay.classList.remove('open'); overlay.setAttribute('aria-hidden','true'); }
+    });
+  });
+  document.querySelectorAll('.modal-overlay').forEach(function(overlay){
+    overlay.addEventListener('click', function(e){ if(e.target===overlay){ overlay.classList.remove('open'); overlay.setAttribute('aria-hidden','true'); } });
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape'){ document.querySelectorAll('.modal-overlay.open').forEach(function(o){ o.classList.remove('open'); o.setAttribute('aria-hidden','true'); }); }
+  });
+
+  var RATES = [
+    ["Пермь",null,null,null,null],["Москва",null,null,null,null],["Геленджик",null,null,null,null],
+    ["Новый Уренгой",null,null,null,null],["Краснодар",null,null,null,null],["Псков",null,null,null,null],
+    ["Адлер",null,null,null,null],["Владивосток",null,null,null,null],["Калининград",null,null,null,null],
+    ["Ставрополь",null,null,null,null],["Обнинск",null,null,null,null],["Тула",null,null,null,null],
+    ["Санкт-Петербург",null,null,null,null],["Пушкин",null,null,null,null],["Хабаровск",null,null,null,null],
+    ["Сочи",null,null,null,null],["Белгород",null,null,null,null],["Майкоп",null,null,null,null],
+    ["Екатеринбург",null,null,null,null],["Липецк",null,null,null,null],["Красногорск",null,null,null,null],
+    ["Пятигорск",null,null,null,null],["Ессентуки",null,null,null,null],["Батайск",null,null,null,null],
+    ["Уссурийск",null,null,null,null],["Гатчина",null,null,null,null],["Клин",null,null,null,null],
+    ["Новороссийск",null,null,null,null],["Курск",null,null,null,null],["Северодвинск",null,null,null,null],
+    ["Ростов-на-Дону",null,null,null,null],["Дубна",null,null,null,null],["Владикавказ",null,null,null,null],
+    ["Новосибирск",null,null,null,null],["Армавир",null,null,null,null],["Жуковский",null,null,null,null],
+    ["Шахты",null,null,null,null],["Тамбов",null,null,null,null],["Лобня",null,null,null,null],
+    ["Альметьевск",null,null,null,null],["Коломна",null,null,null,null],["Ковров",null,null,null,null],
+    ["Ярославль",null,null,null,null],["Иркутск",null,null,null,null],["Балаково",null,null,null,null],
+    ["Нальчик",null,null,null,null],["Пушкино",null,null,null,null],["Волжский",null,null,null,null],
+    ["Мытищи",null,null,null,null],["Сургут",null,null,null,null],["Тверь",null,null,null,null],
+    ["Видное",null,null,null,null],["Казань",null,null,null,null],["Саратов",null,null,null,null],
+    ["Таганрог",null,null,null,null],["Ижевск",null,null,null,null],["Ступино",null,null,null,null],
+    ["Волгоград",null,null,null,null],["Оренбург",null,null,null,null],["Солнечногорск",null,null,null,null],
+    ["Дмитров",null,null,null,null],["Благовещенск",null,null,null,null],["Набережные Челны",null,null,null,null],
+    ["Новомосковск",null,null,null,null],["Новочеркасск",null,null,null,null],["Киров",null,null,null,null],
+    ["Вологда",null,null,null,null],["Уфа",null,null,null,null],["Нижний Новгород",null,null,null,null],
+    ["Колпино",null,null,null,null],["Одинцово",null,null,null,null],["Смоленск",null,null,null,null],
+    ["Королёв",null,null,null,null],["Реутов",null,null,null,null],["Люберцы",null,null,null,null],
+    ["Ульяновск",null,null,null,null],["Брянск",null,null,null,null],["Орехово-Зуево",null,null,null,null],
+    ["Дзержинск",null,null,null,null],["Череповец",null,null,null,null],["Бронницы",null,null,null,null],
+    ["Наро-Фоминск",null,null,null,null],["Нижнекамск",null,null,null,null],["Серпухов",null,null,null,null],
+    ["Раменское",null,null,null,null],["Электросталь",null,null,null,null],["Рязань",null,null,null,null],
+    ["Сергиев Посад",null,null,null,null],["Павловский Посад",null,null,null,null],["Иваново",null,null,null,null],
+    ["Железнодорожный",null,null,null,null],["Кингисепп",null,null,null,null],["Мурманск",null,null,null,null],
+    ["Пенза",null,null,null,null],["Кисловодск",null,null,null,null],["Самара",null,null,null,null],
+    ["Воронеж",null,null,null,null],["Тюмень",null,null,null,null],["Лыткарино",null,null,null,null],
+    ["Химки",null,null,null,null],["Чехов",null,null,null,null],["Магнитогорск",null,null,null,null],
+    ["Подольск",null,null,null,null],["Всеволожск",null,null,null,null],["Балашиха",null,null,null,null],
+    ["Астрахань",null,null,null,null],["Ногинск",null,null,null,null],["Тольятти",null,null,null,null],
+    ["Красноярск",null,null,null,null],["Ивантеевка",null,null,null,null],["Калуга",null,null,null,null],
+    ["Великий Новгород",null,null,null,null],["Омск",null,null,null,null],["Челябинск",null,null,null,null],
+    ["Анапа",null,null,null,null],["Котельники",null,null,null,null],["Зеленоград",null,null,null,null],
+    ["Елабуга",null,null,null,null],["Долгопрудный",null,null,null,null],["Тобольск",null,null,null,null],
+    ["Домодедово",null,null,null,null],["Йошкар-Ола",null,null,null,null],["Барнаул",null,null,null,null],
+    ["Петрозаводск",null,null,null,null],["Томск",null,null,null,null],["Щелково",null,null,null,null],
+    ["Троицк",null,null,null,null],["Нижневартовск",null,null,null,null],["Кострома",null,null,null,null],
+    ["Щербинка",null,null,null,null],["Владимир",null,null,null,null],["Кемерово",null,null,null,null],
+    ["Выборг",null,null,null,null],["Абакан",null,null,null,null],["Курган",null,null,null,null],
+    ["Бердск",null,null,null,null],["Воскресенск",null,null,null,null],["Старый Оскол",null,null,null,null],
+    ["Егорьевск",null,null,null,null],["Дзержинский",null,null,null,null],["Нижний Тагил",null,null,null,null],
+    ["Махачкала",null,null,null,null],["Орел",null,null,null,null],["Фрязино",null,null,null,null],
+    ["Саранск",null,null,null,null],["Ханты-Мансийск",null,null,null,null],["Чебоксары",null,null,null,null],
+    ["Новокузнецк",null,null,null,null],["Архангельск",null,null,null,null],["Сыктывкар",null,null,null,null],
+    ["Стерлитамак",null,null,null,null],["Нефтекамск",null,null,null,null]
+  ];
+
+  function renderRates(filter){
+    var body = document.getElementById('ratesBody');
+    var empty = document.getElementById('ratesEmpty');
+    var count = document.getElementById('ratesCount');
+    if(!body) return;
+    var q = (filter || '').trim().toLowerCase();
+    var rows = RATES.filter(function(r){ return !q || r[0].toLowerCase().indexOf(q) === 0; });
+    if(count) count.textContent = RATES.length;
+    function fmt(n){ return (n===null||n===undefined) ? '—' : n.toLocaleString('ru-RU') + ' ₽'; }
+    body.innerHTML = rows.map(function(r){
+      return '<tr><td>' + r[0] + '</td>' +
+        '<td class="num">' + fmt(r[1]) + '</td>' +
+        '<td class="num">' + fmt(r[2]) + '</td>' +
+        '<td class="num">' + fmt(r[3]) + '</td>' +
+        '<td class="num">' + fmt(r[4]) + '</td></tr>';
+    }).join('');
+    if(empty) empty.style.display = rows.length ? 'none' : 'block';
+  }
+  renderRates();
+  var rateSearch = document.getElementById('rateSearch');
+  if(rateSearch){ rateSearch.addEventListener('input', function(){ renderRates(rateSearch.value); }); }
+
+  var navLinks = document.querySelectorAll('.nav-links a');
+  var navSections = Array.prototype.map.call(navLinks, function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+  if('IntersectionObserver' in window && navSections.length){
+    var navIo = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          var id = '#' + e.target.id;
+          navLinks.forEach(function(a){ a.classList.toggle('active', a.getAttribute('href')===id); });
+        }
+      });
+    }, { rootMargin:'-45% 0px -50% 0px', threshold:0 });
+    navSections.forEach(function(s){ navIo.observe(s); });
+  }
+
+  var track = document.getElementById('routeTrack');
+  var dot = document.getElementById('routeDot');
+  var stops = track ? track.querySelectorAll('.stop') : [];
+  function updateRoute(){
+    if(!track || !dot) return;
+    var rect = track.getBoundingClientRect();
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    var total = rect.height;
+    var progress = (vh*0.55 - rect.top) / total;
+    progress = Math.max(0, Math.min(1, progress));
+    dot.style.top = (progress * (total-18)) + 'px';
+    var idx = Math.min(stops.length-1, Math.floor(progress * stops.length));
+    stops.forEach(function(s,i){ s.classList.toggle('active', i===idx && progress>0.02); });
+  }
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if(!ticking){ requestAnimationFrame(function(){ updateRoute(); ticking=false; }); ticking = true; }
+  }, { passive:true });
+  window.addEventListener('resize', updateRoute);
+  updateRoute();
+})();
+</script>
+</body>
+</html>
